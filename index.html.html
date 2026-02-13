@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>San Valentín</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      width: 100%;
+      height: 100svh;
+      background: #ffffff;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #000;
+      position: relative;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      gap: 20px;
+      transition: opacity 0.8s ease;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    img {
+      width: clamp(160px, 40vw, 240px);
+      max-width: 90%;
+      animation: floatImage 4s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    h1, h2 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 500;
+      z-index: 2;
+    }
+
+    @keyframes floatImage {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* ---------------- VIDEO (CORREGIDO PARA VERTICAL) ---------------- */
+
+    .video-container {
+      position: absolute;
+      inset: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    video {
+      height: 90vh;      /* usa altura como referencia */
+      width: auto;       /* mantiene proporción vertical */
+      max-width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    }
+
+    /* ---------------- CORAZONES ---------------- */
+
+    .heart {
+      position: absolute;
+      bottom: -30px;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: floatHeart linear forwards;
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes floatHeart {
+      0% { transform: translateY(0) rotate(45deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(-120vh) rotate(45deg); opacity: 0; }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Pantalla 1 -->
+  <div class="screen" id="p1">
+    <img src="MEDIAPHOTO/Bubududu1.png.jpeg" alt="Bubududu 1">
+    <h1>Hola mi amor</h1>
+  </div>
+
+  <!-- Pantalla 2 -->
+  <div class="screen hidden" id="p2">
+    <img src="MEDIAPHOTO/Bubududu2.png.jpeg" alt="Bubududu 2">
+    <h2>¿Lista para nuestro primer San Valentín?</h2>
+  </div>
+
+  <!-- Pantalla 3 -->
+  <div class="screen hidden" id="p3">
+    <img src="MEDIAPHOTO/bubududu3.jpeg" alt="Sorpresa">
+    <h2>Oh, espera moitito, te llegó algo...</h2>
+  </div>
+
+  <!-- Pantalla 4 - VIDEO -->
+  <div class="screen hidden video-container" id="p4">
+    <video id="loveVideo" controls>
+      <source src="MEDIAPHOTO/video.mp4" type="video/mp4">
+      Tu navegador no soporta video.
+    </video>
+  </div>
+
+  <script>
+    const p1 = document.getElementById('p1');
+    const p2 = document.getElementById('p2');
+    const p3 = document.getElementById('p3');
+    const p4 = document.getElementById('p4');
+    const video = document.getElementById('loveVideo');
+
+    let step = 1;
+
+    document.body.addEventListener('click', () => {
+
+      if (step === 1) {
+        p1.classList.add('hidden');
+        p2.classList.remove('hidden');
+        step = 2;
+
+      } else if (step === 2) {
+        p2.classList.add('hidden');
+        p3.classList.remove('hidden');
+        step = 3;
+
+      } else if (step === 3) {
+        p3.classList.add('hidden');
+        p4.classList.remove('hidden');
+
+        video.play();
+
+        // eliminar corazones cuando inicia el video
+        const hearts = document.querySelectorAll('.heart');
+        hearts.forEach(h => h.remove());
+
+        step = 4;
+      }
+
+    });
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+
+      heart.style.left = Math.random() * 100 + 'vw';
+      const duration = 6 + Math.random() * 4;
+      heart.style.animationDuration = duration + 's';
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, duration * 1000);
+    }
+
+    setInterval(createHeart, 400);
+  </script>
+
+</body>
+</html>
